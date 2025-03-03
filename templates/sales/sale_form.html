@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - Radwan El Ogail ERP{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">
+            <i class="fas fa-shopping-cart me-2"></i>{{ title }}
+        </h1>
+        <a href="{% url 'sales_dashboard' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Sales
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                {{ sale_form.sale_number|crispy }}
+                                {{ sale_form.customer_name|crispy }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ sale_form.payment_method|crispy }}
+                                {{ sale_form.notes|crispy }}
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3">Sale Items</h5>
+                        {{ formset.management_form }}
+                        <div id="sale-items">
+                            {% for form in formset %}
+                            <div class="sale-item border rounded p-3 mb-3">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {{ form.product|crispy }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ form.quantity|crispy }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ form.unit_price|crispy }}
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        {% if forloop.first %}
+                                        <button type="button" class="btn btn-success add-item mb-3">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        {% else %}
+                                        <button type="button" class="btn btn-danger remove-item mb-3">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% for hidden in form.hidden_fields %}
+                                {{ hidden }}
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Create Sale
+                            </button>
+                            <a href="{% url 'sales_dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        const itemsContainer = $('#sale-items');
+        const totalForms = $('#id_saleitem_set-TOTAL_FORMS');
+        
+        // Add new item
+        $('.add-item').click(function() {
+            const itemCount = $('.sale-item').length;
+            const newItem = $('.sale-item').first().clone(true);
+            
+            // Update form prefix
+            newItem.find(':input').each(function() {
+                const name = $(this).attr('name').replace('-0-', `-${itemCount}-`);
+                const id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            });
+            
+            // Replace add button with remove button
+            newItem.find('.add-item')
+                .removeClass('btn-success add-item')
+                .addClass('btn-danger remove-item')
+                .html('<i class="fas fa-minus"></i>');
+            
+            itemsContainer.append(newItem);
+            totalForms.val(itemCount + 1);
+        });
+        
+        // Remove item
+        $('.remove-item').click(function() {
+            $(this).closest('.sale-item').remove();
+            const itemCount = $('.sale-item').length;
+            totalForms.val(itemCount);
+        });
+        
+        // Update unit price when product is selected
+        $(document).on('change', '[id$=product]', function() {
+            const productId = $(this).val();
+            if (productId) {
+                // You can add an AJAX call here to get the product's price
+                // and update the unit_price field
+            }
+        });
+    });
+</script>
+{% endblock %}

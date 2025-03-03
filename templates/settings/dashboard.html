@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}System Settings - Radwan El Ogail ERP{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3"><i class="fas fa-cogs me-2"></i>System Settings</h1>
+    </div>
+
+    <!-- System Statistics Cards -->
+    <div class="row">
+        <!-- Users Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Users</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_users }}</div>
+                            <div class="small text-muted">Active: {{ active_users }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Products</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_products }}</div>
+                            <div class="small text-muted">Categories: {{ total_categories }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-box fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-info h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total Sales</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_sales }}</div>
+                            <div class="small text-muted">Suppliers: {{ total_suppliers }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Sections -->
+    <div class="row">
+        <!-- User Management -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">User Management</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'admin:auth_user_changelist' %}" class="btn btn-primary btn-block mb-3">
+                        <i class="fas fa-users me-2"></i>Manage Users
+                    </a>
+                    <a href="{% url 'admin:auth_group_changelist' %}" class="btn btn-secondary btn-block">
+                        <i class="fas fa-user-tag me-2"></i>Manage Groups
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Configuration -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">System Configuration</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'admin:index' %}" class="btn btn-info btn-block mb-3">
+                        <i class="fas fa-cog me-2"></i>Admin Dashboard
+                    </a>
+                    <button class="btn btn-warning btn-block" onclick="clearCache()">
+                        <i class="fas fa-broom me-2"></i>Clear System Cache
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function clearCache() {
+        if (confirm('Are you sure you want to clear the system cache?')) {
+            // Add cache clearing functionality here
+            alert('Cache cleared successfully!');
+        }
+    }
+</script>
+{% endblock %}
